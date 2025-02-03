@@ -1,0 +1,468 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Organizer Dashboard</title>
+    <style>
+        body {
+            font-family: 'Roboto', sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #f9f9f9;
+            color: #333;
+        }
+        header {
+            background-color: #fdd835;
+            color: #333;
+            padding: 15px 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        }
+        .logo img {
+            width: 100px;
+        }
+        nav ul {
+            list-style-type: none;
+            padding: 0;
+            margin: 0;
+            display: flex;
+            align-items: center;
+        }
+        nav ul li {
+            margin: 0 10px;
+        }
+        nav ul li a {
+            color: #333;
+            text-decoration: none;
+            font-weight: bold;
+        }
+        .search-bar {
+            margin-left: 20px;
+        }
+        .search-bar input {
+            padding: 10px;
+            width: 300px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+        }
+        .container {
+            max-width: 1200px;
+            margin: 20px auto;
+            padding: 20px;
+            background-color: white;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        }
+        .section {
+            margin-bottom: 20px;
+        }
+        .section h2 {
+            margin-top: 0;
+            color: #fdd835;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-bottom: 20px;
+        }
+        table, th, td {
+            border: 1px solid #ddd;
+        }
+        th, td {
+            padding: 12px;
+            text-align: left;
+        }
+        th {
+            background-color: #f2f2f2;
+        }
+        button {
+            background-color: #fdd835;
+            color: #333;
+            border: none;
+            padding: 10px 20px;
+            cursor: pointer;
+            border-radius: 5px;
+            transition: background-color 0.3s;
+        }
+        button:hover {
+            background-color: #fbc02d;
+        }
+        input, textarea {
+            width: 100%;
+            padding: 10px;
+            margin: 5px 0 10px 0;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+        }
+        #photoGallery img {
+            border-radius: 5px;
+            margin: 10px;
+            width: calc(33.333% - 20px);
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        }
+        #profileDashboard {
+            position: absolute;
+            top: 10px;
+            left: 10px;
+            cursor: pointer;
+        }
+        #organizerProfile {
+            display: none;
+            position: absolute;
+            top: 50px;
+            left: 10px;
+            background: white;
+            border: 1px solid #ccc;
+            padding: 10px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        }
+        #map-search {
+            width: 100%;
+            padding: 10px;
+            margin-bottom: 10px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+        }
+    </style>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyBAZ3Zap2Q_KBCtb6OZzdmLfARO6T0lMLg&libraries=places&callback=initMap" async defer></script>
+</head>
+<body>
+    <header>
+        <div class="logo">
+            <img src="logo.png" alt="V-Connect Logo">
+        </div>
+        <div class="search-bar">
+            <input type="text" id="search" placeholder="Search events, organizers...">
+        </div>
+        <nav>
+            <ul>
+                <li><a href="organizerProfile.html">Profile</a></li>                
+                <li><a href="logout.html">Logout</a></li>
+            </ul>
+        </nav>
+    </header>
+
+    <div class="container">
+        <div class="section">
+
+            <h2>Create Event</h2>
+            <input id="map-search" type="text" placeholder="Search location...">
+            <div id="map" style="height: 400px; width: 100%;"></div>
+            <iframe
+  width="600"
+  height="450"
+  style="border:0"
+  loading="lazy"
+  allowfullscreen
+  referrerpolicy="no-referrer-when-downgrade"
+  src="https://www.google.com/maps/embed/v1/place?key=AIzaSyBAZ3Zap2Q_KBCtb6OZzdmLfARO6T0lMLg
+    &q=Space+Needle,Seattle+WA">
+</iframe>
+            <form id="createEventForm" style="display: none;">
+                <label for="eventName">Event Name:</label>
+                <input type="text" id="eventName" name="eventName" required>
+                <br>
+                <label for="eventDate">Event Date:</label>
+                <input type="date" id="eventDate" name="eventDate" required>
+                <br>
+                <label for="eventDescription">Event Description:</label>
+                <textarea id="eventDescription" name="eventDescription" required></textarea>
+                <br>
+                <label for="eventLocation">Event Location:</label>
+                <input type="text" id="eventLocation" name="eventLocation" required readonly>
+                <br>
+                <button type="submit">Create Event</button>
+            </form>
+        </div>
+
+        <div class="section">
+            <h2>Manage Volunteers</h2>
+            <table>
+                <thead>
+                    <tr>
+                        <th>Volunteer Name</th>
+                        <th>Current Points</th>
+                        <th>Assign Points</th>
+                        <th>Action</th>
+                    </tr>
+                </thead>
+                <tbody id="volunteerList"></tbody>
+            </table>
+        </div>
+
+        <div class="section">
+            <h2>Event Statistics</h2>
+            <button id="refreshStats">Refresh Statistics</button>
+            <div id="eventStats">
+                <p>Total Volunteers: <span id="totalVolunteers">0</span></p>
+                <p>Total Points Assigned: <span id="totalPoints">0</span></p>
+            </div>
+        </div>
+
+        <div class="section">
+            <h2>Event Feedback</h2>
+            <table>
+                <thead>
+                    <tr>
+                        <th>Volunteer Name</th>
+                        <th>Feedback</th>
+                        <th>Rating</th>
+                    </tr>
+                </thead>
+                <tbody id="feedbackList"></tbody>
+            </table>
+        </div>
+
+        <div class="section">
+            <h2>Event Photos</h2>
+            <div id="photoGallery"></div>
+        </div>
+
+        <div class="section">
+            <h2>Event Sponsors</h2>
+            <table>
+                <thead>
+                    <tr>
+                        <th>Sponsor Name</th>
+                        <th>Contribution</th>
+                    </tr>
+                </thead>
+                <tbody id="sponsorList"></tbody>
+            </table>
+        </div>
+
+        <div class="section">
+            <h2>Event Announcements</h2>
+            <ul id="announcementList"></ul>
+        </div>
+
+        <div id="organizerProfile">
+            <h2>Organizer Profile</h2>
+            <div>
+                <p>Name: <span id="organizerName"></span></p>
+                <p>Email: <span id="organizerEmail"></span></p>
+                <p>Phone: <span id="organizerPhone"></span></p>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        let map;
+        let geocoder;
+        let marker;
+        let autocomplete;
+
+        function initMap() {
+            map = new google.maps.Map(document.getElementById('map'), {
+                center: { lat: 20.5937, lng: 78.9629 }, // Center map on India
+                zoom: 5
+            });
+
+            geocoder = new google.maps.Geocoder();
+
+            map.addListener('click', function(event) {
+                placeMarkerAndPanTo(event.latLng, map);
+                geocodeLatLng(event.latLng);
+            });
+
+            const input = document.getElementById('map-search');
+            autocomplete = new google.maps.places.Autocomplete(input);
+            autocomplete.bindTo('bounds', map);
+
+            autocomplete.addListener('place_changed', function() {
+                const place = autocomplete.getPlace();
+                if (!place.geometry) {
+                    alert("No details available for input: '" + place.name + "'");
+                    return;
+                }
+
+                if (place.geometry.viewport) {
+                    map.fitBounds(place.geometry.viewport);
+                } else {
+                    map.setCenter(place.geometry.location);
+                    map.setZoom(17);
+                }
+
+                placeMarkerAndPanTo(place.geometry.location, map);
+                $('#eventLocation').val(place.formatted_address);
+                $('#createEventForm').show();
+            });
+        }
+
+        function placeMarkerAndPanTo(latLng, map) {
+            if (marker) {
+                marker.setPosition(latLng);
+            } else {
+                marker = new google.maps.Marker({
+                    position: latLng,
+                    map: map
+                });
+            }
+            map.panTo(latLng);
+        }
+
+        function geocodeLatLng(latLng) {
+            geocoder.geocode({ location: latLng }, function(results, status) {
+                if (status === 'OK') {
+                    if (results[0]) {
+                        $('#eventLocation').val(results[0].formatted_address);
+                        $('#createEventForm').show();
+                    } else {
+                        alert('No results found');
+                    }
+                } else {
+                    alert('Geocoder failed due to: ' + status);
+                }
+            });
+        }
+
+        $(document).ready(function () {
+            const eventId = "someEventId"; // Replace with actual event ID
+
+            // Fetch volunteers who participated in the event
+            $.get(`/api/event/${eventId}/volunteers`, function (volunteers) {
+                let rows = "";
+                volunteers.forEach(vol => {
+                    rows += `
+                        <tr>
+                            <td>${vol.name}</td>
+                            <td id="points-${vol.id}">${vol.points}</td>
+                            <td><input type="number" id="newPoints-${vol.id}" min="0"></td>
+                            <td><button onclick="assignPoints('${vol.id}')">Give Points</button></td>
+                        </tr>
+                    `;
+                });
+                $("#volunteerList").html(rows);
+            });
+
+            // Function to assign points
+            window.assignPoints = function (volunteerId) {
+                const newPoints = parseInt($(`#newPoints-${volunteerId}`).val()) || 0;
+                $.ajax({
+                    url: `/api/volunteer/${volunteerId}/assign-points`,
+                    type: "POST",
+                    contentType: "application/json",
+                    data: JSON.stringify({ points: newPoints }),
+                    success: function (response) {
+                        alert("Points assigned successfully!");
+                        $(`#points-${volunteerId}`).text(response.updatedPoints);
+                    }
+                });
+            };
+
+            // Handle event creation form submission
+            $("#createEventForm").submit(function (e) {
+                e.preventDefault();
+                const eventData = {
+                    name: $("#eventName").val(),
+                    date: $("#eventDate").val(),
+                    description: $("#eventDescription").val(),
+                    location: $("#eventLocation").val(),
+                };
+                $.ajax({
+                    url: "/api/events",
+                    type: "POST",
+                    contentType: "application/json",
+                    data: JSON.stringify(eventData),
+                    success: function (response) {
+                        alert("Event created successfully!");
+                        // Optionally, clear the form or redirect to another page
+                    }
+                });
+            });
+
+            function fetchEventStats() {
+                $.get(`/api/event/${eventId}/stats`, function (stats) {
+                    $("#totalVolunteers").text(stats.totalVolunteers);
+                    $("#totalPoints").text(stats.totalPoints);
+                });
+            }
+
+            $("#refreshStats").click(function () {
+                fetchEventStats();
+            });
+
+            // Initial fetch of event statistics
+            fetchEventStats();
+
+            // Fetch event feedback
+            $.get(`/api/event/${eventId}/feedback`, function (feedback) {
+                let rows = "";
+                feedback.forEach(fb => {
+                    rows += `
+                        <tr>
+                            <td>${fb.volunteerName}</td>
+                            <td>${fb.feedback}</td>
+                            <td>${fb.rating}</td>
+                        </tr>
+                    `;
+                });
+                $("#feedbackList").html(rows);
+            });
+
+            // Fetch event photos
+            $.get(`/api/event/${eventId}/photos`, function (photos) {
+                let gallery = "";
+                photos.forEach(photo => {
+                    gallery += `<img src="${photo.url}" alt="Event Photo" style="width: 200px; height: auto; margin: 10px;">`;
+                });
+                $("#photoGallery").html(gallery);
+            });
+
+            // Fetch event sponsors
+            $.get(`/api/event/${eventId}/sponsors`, function (sponsors) {
+                let rows = "";
+                sponsors.forEach(sponsor => {
+                    rows += `
+                        <tr>
+                            <td>${sponsor.name}</td>
+                            <td>${sponsor.contribution}</td>
+                        </tr>
+                    `;
+                });
+                $("#sponsorList").html(rows);
+            });
+
+            // Fetch event announcements
+            $.get(`/api/event/${eventId}/announcements`, function (announcements) {
+                let listItems = "";
+                announcements.forEach(announcement => {
+                    listItems += `<li>${announcement.message} - <em>${announcement.date}</em></li>`;
+                });
+                $("#announcementList").html(listItems);
+            });
+
+            // Fetch organizer profile
+            $.get(`/api/organizer/profile`, function (profile) {
+                $("#organizerName").text(profile.name);
+                $("#organizerEmail").text(profile.email);
+                $("#organizerPhone").text(profile.phone);
+            });
+
+            // Toggle profile section
+            $("#profileDashboard").click(function () {
+                $("#organizerProfile").toggle();
+            });
+
+            // Search functionality
+            $('#search').on('input', function() {
+                const query = $(this).val().toLowerCase();
+                // Search events
+                $('.event-card').each(function() {
+                    const title = $(this).find('h4').text().toLowerCase();
+                    $(this).toggle(title.includes(query));
+                });
+                // Search organizers
+                $('#organizerList li').each(function() {
+                    const name = $(this).find('a').text().toLowerCase();
+                    $(this).toggle(name.includes(query));
+                });
+            });
+        });
+    </script>
+</body>
+</html>

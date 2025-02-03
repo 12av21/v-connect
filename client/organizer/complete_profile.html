@@ -1,0 +1,115 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Complete Profile</title>
+</head>
+<body>
+  <h1>Complete Your Profile</h1>
+  <form id="complete-profile-form">
+    <label for="name">Name:</label>
+    <input type="text" id="name" placeholder="Enter your name" required>
+    
+    <label for="address">Address:</label>
+    <input type="text" id="address" placeholder="Enter your address" required>
+
+    <label for="work-type">Type of Work You Want to Do:</label>
+    <select id="work-type">
+      <option value="environmental_cleanup">Environmental Cleanup</option>
+      <option value="tree_plantation">Tree Plantation</option>
+      <option value="healthcare_services">Healthcare Services</option>
+      <option value="education_support">Education Support</option>
+      <option value="animal_welfare">Animal Welfare</option>
+      <option value="disaster_relief">Disaster Relief</option>
+      <option value="community_outreach">Community Outreach</option>
+      <option value="waste_management">Waste Management</option>
+      <option value="water_conservation">Water Conservation</option>
+      <option value="disability_support">Disability Support</option>
+      <option value="child_welfare">Child Welfare</option>
+      <option value="mental_health_support">Mental Health Support</option>
+      <option value="recycling_initiatives">Recycling Initiatives</option>
+      <option value="emergency_response">Emergency Response</option>
+      <option value="public_awareness_campaigns">Public Awareness Campaigns</option>
+      <option value="elderly_care">Elderly Care</option>
+      <option value="nutrition_assistance">Nutrition Assistance</option>
+      <option value="blood_donation_drives">Blood Donation Drives</option>
+      <option value="clean_energy_advocacy">Clean Energy Advocacy</option>
+      <option value="agricultural_support">Agricultural Support</option>
+      <option value="job_training">Job Training</option>
+      <option value="women_empowerment">Women Empowerment</option>
+      <option value="skill_development">Skill Development</option>
+      <option value="cultural_preservation">Cultural Preservation</option>
+      <option value="youth_engagement">Youth Engagement</option>
+      <option value="homeless_support">Homeless Support</option>
+      <option value="sports_development">Sports Development</option>
+      <option value="literacy_programs">Literacy Programs</option>
+      <option value="disaster_preparedness">Disaster Preparedness</option>
+      <option value="vocational_training">Vocational Training</option>
+      <option value="sustainable_farming">Sustainable Farming</option>
+      <option value="sanitation_drives">Sanitation Drives</option>
+      <option value="refugee_assistance">Refugee Assistance</option>
+      <option value="anti_pollution_campaigns">Anti-Pollution Campaigns</option>
+      <option value="community_health_programs">Community Health Programs</option>
+      <option value="renewable_energy_projects">Renewable Energy Projects</option>
+      <option value="tackling_hunger">Tackling Hunger</option>
+      <option value="human_rights_advocacy">Human Rights Advocacy</option>
+      <option value="support_for_victims_of_abuse">Support for Victims of Abuse</option>
+      <option value="disaster_recovery">Disaster Recovery</option>
+      <option value="e_waste_recycling">E-Waste Recycling</option>
+      <option value="animal_shelter_assistance">Animal Shelter Assistance</option>
+      <option value="support_for_the_differently_abled">Support for the Differently Abled</option>
+      <option value="drug_abuse_prevention">Drug Abuse Prevention</option>
+      <option value="reforestation_projects">Reforestation Projects</option>
+      <option value="disaster_relief_fundraising">Disaster Relief Fundraising</option>
+      <option value="street_children_support">Street Children Support</option>
+      <option value="public_safety_initiatives">Public Safety Initiatives</option>
+      <option value="civic_awareness">Civic Awareness</option>
+      <option value="crisis_management">Crisis Management</option>
+    </select>
+    
+    <button type="submit">Save Profile</button>
+  </form>
+
+  <script src="https://www.gstatic.com/firebasejs/10.0.0/firebase-app.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.0.0/firebase-database.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.0.0/firebase-auth.js"></script>
+
+  <script type="module">
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.0.0/firebase-app.js";
+    import { getAuth } from "https://www.gstatic.com/firebasejs/10.0.0/firebase-auth.js";
+    import { getDatabase, ref, set } from "https://www.gstatic.com/firebasejs/10.0.0/firebase-database.js";
+    import firebaseConfig from './firebaseConfig.js';
+
+    const app = initializeApp(firebaseConfig);
+    const auth = getAuth(app);
+    const database = getDatabase(app);
+
+    document.getElementById('complete-profile-form').addEventListener('submit', async (e) => {
+      e.preventDefault();
+
+      const name = document.getElementById('name').value;
+      const address = document.getElementById('address').value;
+      const workType = document.getElementById('work-type').value;
+
+      const user = auth.currentUser;
+
+      if (user) {
+        try {
+          // Save organizer profile data to Firebase
+          await set(ref(database, 'organizers/' + user.uid), {
+            name: name,
+            address: address,
+            workType: workType,
+          });
+
+          // Redirect to the organizer dashboard
+          window.location.href = 'organizerDashboard.html';
+        } catch (error) {
+          console.error("Error saving profile:", error);
+        }
+      }
+    });
+  </script>
+</body>
+</html>

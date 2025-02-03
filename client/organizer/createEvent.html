@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Create Event</title>
+  <link rel="stylesheet" href="https://www.volunteeryatra.com/styles.css">
+  <script src="https://www.gstatic.com/firebasejs/9.1.2/firebase-app.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.1.2/firebase-auth.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.1.2/firebase-database.js"></script>
+  <script src="firebase.js"></script>
+</head>
+<body>
+  <h1>Create Event</h1>
+  <form id="createEventForm">
+    <label for="title">Event Title:</label>
+    <input type="text" id="title" name="title" required><br><br>
+    <label for="date">Event Date:</label>
+    <input type="date" id="date" name="date" required><br><br>
+    <label for="location">Event Location:</label>
+    <input type="text" id="location" name="location" required><br><br>
+    <label for="description">Event Description:</label>
+    <textarea id="description" name="description" required></textarea><br><br>
+    <label for="points">Points for Volunteers:</label>
+    <input type="number" id="points" name="points" required><br><br>
+    <button type="submit">Create Event</button>
+  </form>
+
+  <script>
+    const createEventForm = document.getElementById('createEventForm');
+
+    createEventForm.addEventListener('submit', function(event) {
+      event.preventDefault();
+
+      const user = firebase.auth().currentUser;
+
+      if (user) {
+        const title = document.getElementById('title').value;
+        const date = document.getElementById('date').value;
+        const location = document.getElementById('location').value;
+        const description = document.getElementById('description').value;
+        const points = document.getElementById('points').value;
+
+        // Create new event data
+        const newEvent = {
+          title: title,
+          date: date,
+          location: location,
+          description: description,
+          points: parseInt(points),
+          createdBy: user.uid,
+          volunteers: {}
+        };
+
+        // Save event to Firebase
+        const eventsRef = firebase.database().ref('events');
+        const newEventRef = eventsRef.push();
+        newEventRef.set(newEvent).then(() => {
+          alert('Event created successfully!');
+          window.location.href = 'organizerDashboard.html'; // Redirect to organizer dashboard
+        }).catch(error => {
+          console.error('Error creating event:', error);
+        });
+      } else {
+        alert('You need to log in first!');
+      }
+    });
+  </script>
+</body>
+</html>

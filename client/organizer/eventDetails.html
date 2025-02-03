@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Event Details</title>
+  <link rel="stylesheet" href="styles.css">
+  <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+</head>
+<body>
+  <header>
+    <h1>Event Details</h1>
+    <nav>
+      <ul>
+        <li><a href="organizerEventManagement.html">My Events</a></li>
+        <li><a href="logout.html">Logout</a></li>
+      </ul>
+    </nav>
+  </header>
+
+  <section>
+    <h2 id="eventName">Event Name</h2>
+    <p id="eventDate">Date: </p>
+    <p id="eventLocation">Location: </p>
+    <p id="eventDescription">Description: </p>
+    <h3>Volunteers</h3>
+    <ul id="volunteerList"></ul>
+  </section>
+
+  <script>
+    $(document).ready(function () {
+      const urlParams = new URLSearchParams(window.location.search);
+      const eventId = urlParams.get('eventId');
+
+      // Fetch event details
+      $.get(`/api/event/${eventId}`, function (event) {
+        $("#eventName").text(event.name);
+        $("#eventDate").text(`Date: ${event.date}`);
+        $("#eventLocation").text(`Location: ${event.location}`);
+        $("#eventDescription").text(`Description: ${event.description}`);
+
+        let volunteerList = "";
+        event.volunteers.forEach(vol => {
+          volunteerList += `<li>${vol.name}</li>`;
+        });
+        $("#volunteerList").html(volunteerList);
+      });
+    });
+  </script>
+</body>
+</html>

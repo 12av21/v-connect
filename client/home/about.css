@@ -1,0 +1,119 @@
+/* Reset styles for margin and padding */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: 'Roboto', sans-serif;
+    background-color: #f4f4f4;
+    margin: 0;
+    padding: 0;
+}
+
+header {
+    background-color: #333;
+    color: #fff;
+    padding: 20px 0; /* Increased padding */
+}
+
+nav {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 0 40px; /* Increased padding */
+}
+
+.logo h1 {
+    margin: 0;
+    font-size: 2em; /* Increased font size */
+}
+
+.nav-links {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    display: flex;
+}
+
+.nav-links li {
+    margin-left: 30px; /* Increased margin */
+}
+
+.nav-links a {
+    color: #fff;
+    text-decoration: none;
+    font-weight: 500;
+    font-size: 1.1em; /* Increased font size */
+}
+
+.nav-links a:hover {
+    text-decoration: underline;
+}
+
+.section-container {
+    max-width: 900px; /* Increased max-width */
+    margin: 50px auto;
+    padding: 30px; /* Increased padding */
+    background-color: #fff;
+    box-shadow: 0 0 15px rgba(0, 0, 0, 0.1); /* Increased shadow */
+    border-radius: 10px; /* Increased border-radius */
+}
+
+h2 {
+    color: #333;
+    text-align: center;
+    font-size: 2em; /* Increased font size */
+}
+
+p {
+    color: #555;
+    line-height: 1.8; /* Increased line-height */
+}
+
+.team-members {
+    display: flex;
+    justify-content: space-around;
+    flex-wrap: wrap;
+}
+
+.team-member {
+    text-align: center;
+    margin: 30px; /* Increased margin */
+}
+
+.team-member img {
+    border-radius: 50%;
+    width: 160px; /* Increased width */
+    height: 160px; /* Increased height */
+    object-fit: cover;
+}
+
+.team-member h3 {
+    margin: 15px 0 5px; /* Adjusted margin */
+    color: #333;
+    font-size: 1.5em; /* Increased font size */
+}
+
+.team-member p {
+    color: #777;
+}
+
+footer {
+    background-color: #333;
+    color: #fff;
+    text-align: center;
+    padding: 30px 0; /* Increased padding */
+}
+
+footer a {
+    color: #fff;
+    text-decoration: none;
+}
+
+footer a:hover {
+    text-decoration: underline;
+}

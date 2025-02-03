@@ -1,0 +1,532 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Volunteer Dashboard</title>
+  <style>
+    body {
+      font-family: 'Roboto', sans-serif;
+      background-color: #f9f9f9;
+      margin: 0;
+      padding: 0;
+      color: #333;
+    }
+    header {
+      background-color: #fdd835;
+      color: #333;
+      padding: 15px 20px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    }
+    .logo img {
+      width: 100px;
+    }
+    nav ul {
+      list-style-type: none;
+      padding: 0;
+      margin: 0;
+      display: flex;
+      align-items: center;
+    }
+    nav ul li {
+      margin: 0 10px;
+    }
+    nav ul li a {
+      color: #333;
+      text-decoration: none;
+      font-weight: bold;
+    }
+    .profile-picture-nav {
+      width: 40px;
+      height: 40px;
+      border-radius: 50%;
+      overflow: hidden;
+      cursor: pointer;
+    }
+    .profile-picture-nav img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+    }
+    .search-bar {
+      margin-left: 20px;
+    }
+    .search-bar input {
+      padding: 10px;
+      width: 300px;
+      border: 1px solid #ccc;
+      border-radius: 5px;
+    }
+    .container {
+      max-width: 1200px;
+      margin: 20px auto;
+      padding: 20px;
+      background-color: white;
+      border-radius: 8px;
+      box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    }
+    .dashboard {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 20px;
+    }
+    .dashboard > div {
+      flex: 1 1 calc(50% - 20px);
+      background-color: white;
+      border-radius: 8px;
+      box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+      padding: 20px;
+    }
+    .events-list, .volunteers-list, .leaderboard, .recent-activities, .profile-management {
+      margin-bottom: 20px;
+    }
+    .event-cards, .activity-cards {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+    }
+    .event-card, .activity-card {
+      background-color: #fff9c4;
+      padding: 15px;
+      border-radius: 8px;
+      box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+      flex: 1 1 calc(33.333% - 20px);
+      animation: fadeInUp 0.5s ease-in-out;
+    }
+    .activity-card {
+      background-color: #ffecb3;
+    }
+    @keyframes fadeInUp {
+      from {
+        opacity: 0;
+        transform: translateY(20px);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+    .event-card h4, .activity-card h4 {
+      margin-top: 0;
+    }
+    button {
+      background-color: #fdd835;
+      color: #333;
+      border: none;
+      padding: 10px 20px;
+      cursor: pointer;
+      border-radius: 5px;
+      transition: background-color 0.3s;
+    }
+    button:hover {
+      background-color: #fbc02d;
+    }
+    footer {
+      background-color: #fdd835;
+      color: #333;
+      text-align: center;
+      padding: 20px 0;
+      margin-top: 20px;
+      box-shadow: 0 -2px 4px rgba(0, 0, 0, 0.1);
+    }
+    footer a {
+      color: #333;
+      text-decoration: none;
+    }
+    footer a:hover {
+      text-decoration: underline;
+    }
+    .note {
+      text-align: center;
+      margin-top: 20px;
+      font-size: 14px;
+      color: #555;
+    }
+    .modal {
+      display: none;
+      position: fixed;
+      z-index: 1;
+      left: 0;
+      top: 0;
+      width: 100%;
+      height: 100%;
+      overflow: auto;
+      background-color: rgb(0,0,0);
+      background-color: rgba(0,0,0,0.4);
+      padding-top: 60px;
+    }
+    .modal-content {
+      background-color: #fefefe;
+      margin: 5% auto;
+      padding: 20px;
+      border: 1px solid #888;
+      width: 80%;
+      max-width: 500px;
+      border-radius: 10px;
+    }
+    .close {
+      color: #aaa;
+      float: right;
+      font-size: 28px;
+      font-weight: bold;
+    }
+    .close:hover,
+    .close:focus {
+      color: black;
+      text-decoration: none;
+      cursor: pointer;
+    }
+    .modal input, .modal textarea, .modal select {
+      width: 100%;
+      padding: 10px;
+      margin: 10px 0;
+      border: 1px solid #ccc;
+      border-radius: 5px;
+    }
+    .modal input[type="file"] {
+      padding: 0;
+    }
+    .leaderboard-table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-top: 20px;
+    }
+    .leaderboard-table th, .leaderboard-table td {
+      border: 1px solid #ddd;
+      padding: 8px;
+      text-align: left;
+    }
+    .leaderboard-table th {
+      background-color: #fff1b2bd;
+      color: #333;
+    }
+    .leaderboard-table tbody tr:nth-child(even) {
+      background-color: #f2f2f2;
+    }
+    .leaderboard-table tbody tr:hover {
+      background-color: #ddd;
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <div class="logo">
+      <img src="logo.png" alt="V-Connect Logo">
+    </div>
+    <div class="search-bar">
+      <input type="text" id="search" placeholder="Search volunteers, events, organizers...">
+    </div>
+    <nav>
+      <ul>
+        <li>
+          <div class="profile-picture-nav" onclick="window.location.href='profile.html'">
+            <img src="profile-placeholder.png" alt="Profile Picture" id="profile-picture-nav">
+          </div>
+        </li>
+        <li><a href="logout.html">Logout</a></li>
+      </ul>
+    </nav>
+  </header>
+
+  <div class="container">
+    <h2>Welcome, <span id="volunteer-name">Volunteer</span>!</h2>
+
+    <div class="dashboard">
+      <!-- Event List Section -->
+      <div class="events-list">
+        <h3>Upcoming Events</h3>
+        <div class="event-cards" id="event-list">
+          <!-- Event cards will be dynamically inserted here -->
+        </div>
+      </div>
+
+      <!-- Volunteers Joining Events Section -->
+      <div class="volunteers-list">
+        <h3>Volunteers Joining These Events</h3>
+        <ul id="volunteers-list">
+          <!-- Volunteer list will be dynamically inserted here -->
+        </ul>
+      </div>
+
+
+      <!-- Recent Activities Section -->
+      <div class="recent-activities">
+        <h3>Recent Activities</h3>
+        <div class="activity-cards" id="activity-list">
+          <!-- Activity cards will be dynamically inserted here -->
+        </div>
+      </div>
+    </div>
+
+    
+      <!-- Leaderboard Section -->
+      <div class="leaderboard">
+        <h3>Leaderboard</h3>
+        <table class="leaderboard-table" id="leaderboard-table">
+          <thead>
+            <tr>
+              <th>Rank</th>
+              <th>Name</th>
+              <th>Points</th>
+              <th>Badge</th>
+            </tr>
+          </thead>
+          <tbody>
+            <!-- Top 3 volunteers will be dynamically inserted here -->
+          </tbody>
+        </table>
+        <button id="see-all-leaderboard">See All</button>
+      </div>
+    <!-- Note about project location -->
+    <div class="note">
+      <p>Note: This project operates only in India.</p>
+    </div>
+  </div>
+
+  <!-- Modal for personal details -->
+  <div id="personalDetailsModal" class="modal">
+    <div class="modal-content">
+      <span class="close">&times;</span>
+      <h2>Personal Details</h2>
+      <form id="personalDetailsForm">
+        <label for="username">Username:</label>
+        <input type="text" id="username" name="username" required>
+        
+        <label for="name">Full Name:</label>
+        <input type="text" id="name" name="name" required>
+        
+        <label for="email">Email:</label>
+        <input type="email" id="email" name="email" required>
+        
+        <label for="instagram">Instagram:</label>
+        <input type="text" id="instagram" name="instagram">
+        
+        <label for="facebook">Facebook:</label>
+        <input type="text" id="facebook" name="facebook">
+        
+        <label for="personalWebsite">Personal Website:</label>
+        <input type="url" id="personalWebsite" name="personalWebsite">
+        
+        <label for="skills">Skills:</label>
+        <input type="text" id="skills" name="skills">
+        
+        <label for="location">Location:</label>
+        <input type="text" id="location" name="location" required>
+        
+        <label for="dob">Birthdate:</label>
+        <input type="date" id="dob" name="dob" required>
+        
+        <label for="gender">Gender:</label>
+        <select id="gender" name="gender" required>
+          <option value="">Select Gender</option>
+          <option value="male">Male</option>
+          <option value="female">Female</option>
+          <option value="other">Other</option>
+        </select>
+        
+        <label for="fatherName">Father's Name:</label>
+        <input type="text" id="fatherName" name="fatherName" required>
+        
+        <label for="mobile">Mobile Number:</label>
+        <input type="tel" id="mobile" name="mobile" required>
+        
+        <label for="emergencyContact">Emergency Contact Number:</label>
+        <input type="tel" id="emergencyContact" name="emergencyContact" required>
+        
+        <label for="address">Address:</label>
+        <textarea id="address" name="address" required></textarea>
+        
+        <label for="bio">Bio:</label>
+        <textarea id="bio" name="bio"></textarea>
+        
+        <label for="state">State:</label>
+        <select id="state" name="state" required>
+          <option value="">Select State</option>
+          <!-- Add options for states here -->
+        </select>
+        
+        <label for="profilePhoto">Upload Photo:</label>
+        <input type="file" id="profilePhoto" name="profilePhoto">
+        
+        <label for="identityProof">Upload Identity Proof:</label>
+        <input type="file" id="identityProof" name="identityProof">
+        
+        <button type="submit">Submit</button>
+      </form>
+    </div>
+  </div>
+  <script>
+    // Fetch volunteer details and update profile section
+    $(document).ready(function() {
+      const volunteerId = 'currentVolunteerId'; // Replace with actual volunteer ID from Firebase Auth
+
+      // Fetch volunteer data (name, badge, points, profile picture)
+      $.get(`/api/profile/${volunteerId}`, function(profile) {
+        $('#volunteer-name').text(profile.name);
+        if (profile.profilePicture) {
+          $('#profile-picture-nav').attr('src', profile.profilePicture);
+        }
+      });
+
+      // Fetch events and display them
+      function fetchEvents() {
+        $.get('/api/events', function(events) {
+          $('#event-list').empty();
+          events.forEach(event => {
+            const eventCard = `
+              <div class="event-card">
+                <h4>${event.title}</h4>
+                <p>${event.description}</p>
+                <p><strong>Location:</strong> ${event.location}</p>
+                <button onclick="joinEvent(${event.id})">Join Event</button>
+              </div>
+            `;
+            $('#event-list').append(eventCard);
+          });
+        });
+      }
+
+      // Initial fetch of events
+      fetchEvents();
+
+      // Fetch top 3 volunteers for leaderboard
+      function fetchTopVolunteers() {
+        $.get('/api/leaderboard', function(volunteers) {
+          $('#leaderboard-table tbody').empty();
+          volunteers.slice(0, 3).forEach((volunteer, index) => {
+            const volunteerRow = `
+              <tr>
+                <td>${index + 1}</td>
+                <td>${volunteer.name}</td>
+                <td>${volunteer.points}</td>
+                <td>${volunteer.badge}</td>
+              </tr>
+            `;
+            $('#leaderboard-table tbody').append(volunteerRow);
+          });
+        });
+      }
+
+      // Fetch all volunteers for leaderboard
+      function fetchAllVolunteers() {
+        $.get('/api/leaderboard', function(volunteers) {
+          $('#leaderboard-table tbody').empty();
+          volunteers.forEach((volunteer, index) => {
+            const volunteerRow = `
+              <tr>
+                <td>${index + 1}</td>
+                <td>${volunteer.name}</td>
+                <td>${volunteer.points}</td>
+                <td>${volunteer.badge}</td>
+              </tr>
+            `;
+            $('#leaderboard-table tbody').append(volunteerRow);
+          });
+        });
+      }
+
+      // Initial fetch of top 3 volunteers
+      fetchTopVolunteers();
+
+      // Expand leaderboard to show all volunteers
+      $('#see-all-leaderboard').click(function() {
+        fetchAllVolunteers();
+        $(this).hide();
+      });
+
+      // Search functionality
+      $('#search').on('input', function() {
+        const query = $(this).val().toLowerCase();
+        // Search events
+        $('.event-card').each(function() {
+          const title = $(this).find('h4').text().toLowerCase();
+          $(this).toggle(title.includes(query));
+        });
+        // Search volunteers
+        $('#volunteers-list li').each(function() {
+          const name = $(this).find('a').text().toLowerCase();
+          $(this).toggle(name.includes(query));
+        });
+        // Search organizers (assuming organizers are listed similarly to volunteers)
+        // Add similar logic for organizers if needed
+      });
+
+      // Fetch volunteers joining events
+      $.get('/api/volunteers', function(volunteers) {
+        volunteers.forEach(volunteer => {
+          const volunteerItem = `
+            <li>
+              <a href="profile.html?volunteerId=${volunteer.id}">${volunteer.name}</a> - Badge: ${volunteer.badge || 'No Badge'}
+            </li>
+          `;
+          $('#volunteers-list').append(volunteerItem);
+        });
+      });
+
+      // Fetch recent activities and display them
+      $.get('/api/recentActivities', function(activities) {
+        activities.forEach(activity => {
+          const activityCard = `
+            <div class="activity-card">
+              <h4>${activity.title}</h4>
+              <p>${activity.description}</p>
+              <p><strong>Date:</strong> ${activity.date}</p>
+            </div>
+          `;
+          $('#activity-list').append(activityCard);
+        });
+      });
+
+      // Check if volunteer is logging in for the first time
+      $.get(`/api/checkFirstTime/${volunteerId}`, function(isFirstTime) {
+        if (isFirstTime) {
+          $('#personalDetailsModal').show();
+        }
+      });
+
+      // Close modal
+      $('.close').click(function() {
+        $('#personalDetailsModal').hide();
+      });
+
+      // Submit personal details form
+      $('#personalDetailsForm').submit(function(event) {
+        event.preventDefault();
+        const formData = new FormData(this);
+        formData.append('volunteerId', volunteerId);
+        $.ajax({
+          url: '/api/savePersonalDetails',
+          type: 'POST',
+          data: formData,
+          processData: false,
+          contentType: false,
+          success: function(response) {
+            alert(response.message);
+            $('#personalDetailsModal').hide();
+          }
+        });
+      });
+
+      // Edit profile button click
+      $('#edit-profile').click(function() {
+        $('#personalDetailsModal').show();
+      });
+    });
+
+    // Function to join event
+    function joinEvent(eventId) {
+      $.post('/api/joinEvent', { eventId: eventId, volunteerId: 'currentVolunteerId' }, function(response) {
+        alert(response.message);
+      });
+    }
+  </script>
+
+  <footer>
+    <p>&copy; 2025 V-Connect. All rights reserved.</p>
+    <p><a href="privacy.html">Privacy Policy</a> | <a href="terms.html">Terms of Service</a></p>
+  </footer>
+</body>
+</html>

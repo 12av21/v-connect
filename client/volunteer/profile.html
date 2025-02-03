@@ -1,0 +1,338 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Volunteer Profile</title>
+    <style>
+        body {
+            font-family: 'Roboto', sans-serif;
+            background-color: #f9f9f9;
+            margin: 0;
+            padding: 0;
+            color: #333;
+        }
+        header {
+            background-color: #fdd835;
+            color: #333;
+            padding: 15px 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        }
+        nav ul {
+            list-style-type: none;
+            padding: 0;
+            margin: 0;
+            display: flex;
+            align-items: center;
+        }
+        nav ul li {
+            margin: 0 10px;
+        }
+        nav ul li a {
+            color: #333;
+            text-decoration: none;
+            font-weight: bold;
+        }
+        .container {
+            max-width: 800px;
+            margin: 20px auto;
+            padding: 20px;
+            background-color: white;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        }
+        .profile-section {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+        .profile-section img {
+            width: 150px;
+            height: 150px;
+            border-radius: 50%;
+            object-fit: cover;
+            margin-bottom: 20px;
+        }
+        .profile-section h2 {
+            margin: 0;
+        }
+        .profile-details {
+            width: 100%;
+            margin-top: 20px;
+        }
+        .profile-details p {
+            margin: 10px 0;
+        }
+        .profile-details strong {
+            display: inline-block;
+            width: 150px;
+        }
+        button {
+            background-color: #fdd835;
+            color: #333;
+            border: none;
+            padding: 10px 20px;
+            cursor: pointer;
+            border-radius: 5px;
+            transition: background-color 0.3s;
+        }
+        button:hover {
+            background-color: #fbc02d;
+        }
+        .modal {
+            display: none;
+            position: fixed;
+            z-index: 1;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            overflow: auto;
+            background-color: rgb(0,0,0);
+            background-color: rgba(0,0,0,0.4);
+            padding-top: 60px;
+        }
+        .modal-content {
+            background-color: #fefefe;
+            margin: 5% auto;
+            padding: 20px;
+            border: 1px solid #888;
+            width: 80%;
+            max-width: 500px;
+            border-radius: 10px;
+        }
+        .close {
+            color: #aaa;
+            float: right;
+            font-size: 28px;
+            font-weight: bold;
+        }
+        .close:hover,
+        .close:focus {
+            color: black;
+            text-decoration: none;
+            cursor: pointer;
+        }
+        .modal input, .modal textarea, .modal select {
+            width: 100%;
+            padding: 10px;
+            margin: 10px 0;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+        }
+        .modal input[type="file"] {
+            padding: 0;
+        }
+        .skills-container {
+            position: relative;
+        }
+        .skills-dropdown {
+            position: absolute;
+            top: 100%;
+            left: 0;
+            right: 0;
+            max-height: 150px;
+            overflow-y: auto;
+            background-color: white;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            z-index: 1000;
+        }
+        .skills-dropdown div {
+            padding: 10px;
+            cursor: pointer;
+        }
+        .skills-dropdown div:hover {
+            background-color: #f1f1f1;
+        }
+        .selected-skills {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 5px;
+            margin-top: 10px;
+        }
+        .selected-skills span {
+            background-color: #fdd835;
+            padding: 5px 10px;
+            border-radius: 5px;
+            display: flex;
+            align-items: center;
+        }
+        .selected-skills span .remove-skill {
+            margin-left: 5px;
+            cursor: pointer;
+        }
+    </style>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+</head>
+<body>
+    <header>
+        <h1>Volunteer Profile</h1>
+        <nav>
+            <ul>
+                <li><a href="home.html">Dashboard</a></li>
+                <li><a href="logout.html">Logout</a></li>
+            </ul>
+        </nav>
+    </header>
+
+    <div class="container">
+        <div class="profile-section">
+            <img src="profile-placeholder.png" alt="Profile Picture" id="profile-picture">
+            <h2 id="profile-name">Loading...</h2>
+            <button id="edit-profile">Edit Profile</button>
+        </div>
+        <div class="profile-details">
+            <p><strong>Points:</strong> <span id="profile-points">Loading...</span></p>
+            <p><strong>Badge:</strong> <span id="profile-badge">Loading...</span></p>
+            <p><strong>Email:</strong> <span id="profile-email">Loading...</span></p>
+            <p><strong>Location:</strong> <span id="profile-location">Loading...</span></p>
+            <p><strong>Skills:</strong> <span id="profile-skills">Loading...</span></p>
+            <p><strong>Bio:</strong> <span id="profile-bio">Loading...</span></p>
+        </div>
+    </div>
+
+    <!-- Modal for editing profile details -->
+    <div id="editProfileModal" class="modal">
+        <div class="modal-content">
+            <span class="close">&times;</span>
+            <h2>Edit Profile</h2>
+            <form id="editProfileForm">
+                <label for="edit-name">Full Name:</label>
+                <input type="text" id="edit-name" name="name" required>
+                
+                <label for="edit-email">Email:</label>
+                <input type="email" id="edit-email" name="email" required>
+                
+                <label for="edit-location">Location:</label>
+                <input type="text" id="edit-location" name="location" required>
+                
+                <label for="edit-skills">Skills:</label>
+                    <div class="skills-container">
+                    <input type="text" id="edit-skills" name="skills" placeholder="Search skills...">
+                    <div class="skills-dropdown" id="skills-dropdown"></div>
+                </div>
+                <div class="selected-skills" id="selected-skills"></div>
+                
+                <label for="edit-bio">Bio:</label>
+                <textarea id="edit-bio" name="bio"></textarea>
+                
+                <label for="edit-profilePhoto">Upload Photo:</label>
+                <input type="file" id="edit-profilePhoto" name="profilePhoto">
+                
+                <button type="submit">Save Changes</button>
+            </form>
+        </div>
+    </div>
+
+    <script>
+        $(document).ready(function () {
+            const volunteerId = "currentVolunteerId"; // Replace with actual Firebase user ID
+            const skills = ["Communication", "Teamwork", "Leadership", "Problem Solving", "Time Management", "Adaptability", "Creativity", "Technical Skills"]; // Example skills
+
+            // Fetch updated profile data
+            $.get(`/api/profile/${volunteerId}`, function (profile) {
+                $('#profile-name').text(profile.name);
+                $('#profile-points').text(profile.points);
+                $('#profile-badge').text(profile.badge || "No Badge");
+                $('#profile-email').text(profile.email);
+                $('#profile-location').text(profile.location);
+                $('#profile-skills').text(profile.skills.join(', '));
+                $('#profile-bio').text(profile.bio);
+                if (profile.profilePicture) {
+                    $('#profile-picture').attr('src', profile.profilePicture);
+                }
+            });
+
+            // Open edit profile modal
+            $('#edit-profile').click(function() {
+                $('#editProfileModal').show();
+                // Pre-fill form with current profile data
+                $('#edit-name').val($('#profile-name').text());
+                $('#edit-email').val($('#profile-email').text());
+                $('#edit-location').val($('#profile-location').text());
+                $('#edit-bio').val($('#profile-bio').text());
+
+                // Pre-fill skills
+                const currentSkills = $('#profile-skills').text().split(', ');
+                $('#selected-skills').empty();
+                currentSkills.forEach(skill => {
+                    if (skill) {
+                        $('#selected-skills').append(`<span>${skill} <span class="remove-skill">&times;</span></span>`);
+                    }
+                });
+            });
+
+            // Close modal
+            $('.close').click(function() {
+                $('#editProfileModal').hide();
+            });
+
+            // Submit edit profile form
+            $('#editProfileForm').submit(function(event) {
+                event.preventDefault();
+                const formData = new FormData(this);
+                formData.append('volunteerId', volunteerId);
+                const selectedSkills = [];
+                $('#selected-skills span').each(function() {
+                    selectedSkills.push($(this).text().trim());
+                });
+                formData.set('skills', selectedSkills.join(', '));
+                $.ajax({
+                    url: '/api/updateProfile',
+                    type: 'POST',
+                    data: formData,
+                    processData: false,
+                    contentType: false,
+                    success: function(response) {
+                        alert(response.message);
+                        $('#editProfileModal').hide();
+                        // Refresh profile data
+                        $.get(`/api/profile/${volunteerId}`, function (profile) {
+                            $('#profile-name').text(profile.name);
+                            $('#profile-points').text(profile.points);
+                            $('#profile-badge').text(profile.badge || "No Badge");
+                            $('#profile-email').text(profile.email);
+                            $('#profile-location').text(profile.location);
+                            $('#profile-skills').text(profile.skills.join(', '));
+                            $('#profile-bio').text(profile.bio);
+                            if (profile.profilePicture) {
+                                $('#profile-picture').attr('src', profile.profilePicture);
+                            }
+                        });
+                    }
+                });
+            });
+
+            // Skills search functionality
+            $('#edit-skills').on('input', function() {
+                const query = $(this).val().toLowerCase();
+                $('#skills-dropdown').empty();
+                if (query) {
+                    skills.filter(skill => skill.toLowerCase().includes(query)).forEach(skill => {
+                        $('#skills-dropdown').append(`<div>${skill}</div>`);
+                    });
+                }
+            });
+
+            // Add skill to selected skills
+            $('#skills-dropdown').on('click', 'div', function() {
+                const skill = $(this).text();
+                if (!$('#selected-skills span').text().includes(skill)) {
+                    $('#selected-skills').append(`<span>${skill} <span class="remove-skill">&times;</span></span>`);
+                }
+                $('#skills-dropdown').empty();
+                $('#edit-skills').val('');
+            });
+
+            // Remove skill from selected skills
+            $('#selected-skills').on('click', '.remove-skill', function() {
+                $(this).parent().remove();
+            });
+        });
+    </script>
+</body>
+</html>

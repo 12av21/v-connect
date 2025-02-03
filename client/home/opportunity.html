@@ -1,0 +1,206 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Volunteer Opportunities | V-Connect</title>
+    <style>
+        body {
+            font-family: 'Roboto', sans-serif;
+            background-color: #f4f4f4;
+            margin: 0;
+            padding: 0;
+            color: #333;
+        }
+        header {
+            background-color: #ffffff;
+            color: #333;
+            padding: 15px 0;
+            text-align: center;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        }
+        nav {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 20px;
+        }
+        .logo h1 {
+            margin: 0;
+        }
+        .nav-links {
+            list-style: none;
+            padding: 0;
+            margin: 0;
+            display: flex;
+        }
+        .nav-links li {
+            margin-left: 20px;
+        }
+        .nav-links a {
+            color: #333;
+            text-decoration: none;
+            font-weight: bold;
+        }
+        .opportunity-header {
+            background-color: #e0f7fa;
+            color: #333;
+            padding: 40px 20px;
+            text-align: center;
+        }
+        .section-container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+        .opportunity-list {
+            background-color: white;
+            padding: 40px 20px;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+            margin: 20px 0;
+        }
+        .opportunity-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 20px;
+            border-bottom: 1px solid #ddd;
+        }
+        .opportunity-item:last-child {
+            border-bottom: none;
+        }
+        .opportunity-details {
+            max-width: 70%;
+        }
+        .opportunity-button {
+            background-color: #007BFF;
+            color: white;
+            padding: 10px 20px;
+            text-decoration: none;
+            border-radius: 5px;
+            transition: background-color 0.3s;
+        }
+        .opportunity-button:hover {
+            background-color: #0056b3;
+        }
+        .pagination {
+            display: flex;
+            justify-content: center;
+            margin-top: 20px;
+        }
+        .page-link {
+            margin: 0 5px;
+            padding: 10px 20px;
+            background-color: #007BFF;
+            color: white;
+            text-decoration: none;
+            border-radius: 5px;
+            transition: background-color 0.3s;
+        }
+        .page-link:hover {
+            background-color: #0056b3;
+        }
+        footer {
+            background-color: #ffffff;
+            color: #333;
+            text-align: center;
+            padding: 20px 0;
+            margin-top: 20px;
+            box-shadow: 0 -2px 4px rgba(0, 0, 0, 0.1);
+        }
+        footer a {
+            color: #007BFF;
+            text-decoration: none;
+        }
+        footer a:hover {
+            text-decoration: underline;
+        }
+    </style>
+</head>
+
+<body>
+    <header>
+        <nav>
+            <div class="logo">
+                <h1>V-Connect</h1>
+            </div>
+            <ul class="nav-links">
+                <li><a href="index.html">Home</a></li>
+                <li><a href="about.html">About Us</a></li>
+                <li><a href="opportunities.html">Opportunities</a></li>
+                <li><a href="contact.html">Contact</a></li>
+            </ul>
+        </nav>
+    </header>
+
+    <section class="opportunity-header">
+        <div class="section-container">
+            <h2>Volunteer Opportunities</h2>
+            <p>Discover meaningful volunteer opportunities for environmental causes. Join us in making a positive impact on the planet.</p>
+        </div>
+    </section>
+
+    <section class="opportunity-list">
+        <div class="section-container">
+            <div class="opportunity-item">
+                <div class="opportunity-details">
+                    <h3>Beach Clean-Up</h3>
+                    <p>Join us for a beach clean-up event to remove plastic waste and preserve marine life.</p>
+                    <p><strong>Location:</strong> Santa Monica Beach</p>
+                    <p><strong>Date:</strong> February 15, 2025</p>
+                </div>
+                <a href="event-details.html" class="opportunity-button">Learn More</a>
+            </div>
+
+            <div class="opportunity-item">
+                <div class="opportunity-details">
+                    <h3>Tree Planting Campaign</h3>
+                    <p>Help us plant trees in local communities to combat climate change and enhance green spaces.</p>
+                    <p><strong>Location:</strong> Central Park</p>
+                    <p><strong>Date:</strong> March 10, 2025</p>
+                </div>
+                <a href="event-details.html" class="opportunity-button">Learn More</a>
+            </div>
+
+            <div class="opportunity-item">
+                <div class="opportunity-details">
+                    <h3>Recycling Awareness Program</h3>
+                    <p>Raise awareness about recycling practices and encourage sustainable waste management.</p>
+                    <p><strong>Location:</strong> Community Center</p>
+                    <p><strong>Date:</strong> March 25, 2025</p>
+                </div>
+                <a href="event-details.html" class="opportunity-button">Learn More</a>
+            </div>
+
+            <div class="opportunity-item">
+                <div class="opportunity-details">
+                    <h3>Water Conservation Initiative</h3>
+                    <p>Assist in educating the community about the importance of water conservation and its impact on the environment.</p>
+                    <p><strong>Location:</strong> Green Valley</p>
+                    <p><strong>Date:</strong> April 5, 2025</p>
+                </div>
+                <a href="event-details.html" class="opportunity-button">Learn More</a>
+            </div>
+
+            <div class="pagination">
+                <a href="#" class="page-link">Previous</a>
+                <a href="#" class="page-link">1</a>
+                <a href="#" class="page-link">2</a>
+                <a href="#" class="page-link">Next</a>
+            </div>
+        </div>
+    </section>
+
+    <footer>
+        <div class="footer-container">
+            <p>&copy; 2025 V-Connect. All Rights Reserved.</p>
+            <p>Contact: <a href="mailto:info@vconnect.com">info@vconnect.com</a></p>
+        </div>
+    </footer>
+</body>
+
+</html>
